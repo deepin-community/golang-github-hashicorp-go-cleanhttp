@@ -1,0 +1,51 @@
+Source: golang-github-hashicorp-go-cleanhttp
+Maintainer: Debian Go Packaging Team <team+pkg-go@tracker.debian.org>
+Uploaders: Tianon Gravi <tianon@debian.org>,
+           Tim Potter <tpot@hpe.com>,
+           Anthony Fok <foka@debian.org>,
+           Dmitry Smirnov <onlyjob@debian.org>,
+Section: golang
+Testsuite: autopkgtest-pkg-go
+Priority: optional
+Build-Depends: debhelper-compat (= 13),
+               dh-golang,
+               golang-any
+Standards-Version: 4.5.1
+Vcs-Browser: https://salsa.debian.org/go-team/packages/golang-github-hashicorp-go-cleanhttp
+Vcs-Git: https://salsa.debian.org/go-team/packages/golang-github-hashicorp-go-cleanhttp.git
+Homepage: https://github.com/hashicorp/go-cleanhttp
+Rules-Requires-Root: no
+XS-Go-Import-Path: github.com/hashicorp/go-cleanhttp
+
+Package: golang-github-hashicorp-go-cleanhttp-dev
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Functions for accessing "clean" Go http.Client values
+ The Go standard library contains a default http.Client called
+ http.DefaultClient. It is a common idiom in Go code to start with
+ http.DefaultClient and tweak it as necessary, and in fact, this is encouraged;
+ from the http package documentation:
+ .
+   The Client's Transport typically has internal state (cached TCP connections),
+   so Clients should be reused instead of created as needed. Clients are safe
+   for concurrent use by multiple goroutines.
+ .
+ Unfortunately, this is a shared value, and it is not uncommon for libraries to
+ assume that they are free to modify it at will. With enough dependencies, it
+ can be very easy to encounter strange problems and race conditions due to
+ manipulation of this shared value across libraries and goroutines (clients are
+ safe for concurrent use, but writing values to the client struct itself is not
+ protected).
+ .
+ Making things worse is the fact that a bare http.Client will use a default
+ http.Transport called http.DefaultTransport, which is another global value that
+ behaves the same way. So it is not simply enough to replace http.DefaultClient
+ with &http.Client{}.
+ .
+ This repository provides some simple functions to get a "clean" http.Client --
+ one that uses the same default values as the Go standard library, but returns a
+ client that does not share any state with other clients.
+ .
+ This package contains the source.
